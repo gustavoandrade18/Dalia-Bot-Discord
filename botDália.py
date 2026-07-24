@@ -22,6 +22,7 @@ import os
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+from discord.ext import voice_recv
 load_dotenv()  # lê o arquivo .env e carrega as variáveis nele
 
 from iaChatDália import (
@@ -31,13 +32,15 @@ from iaChatDália import (
     iniciar_conversa_discord,
     formatar_com_autor,
 )
-
+from discord.ext import voice_recv
 
 # --- Configuração do bot ---
 intents = discord.Intents.default()
 intents.message_content = True
 
 bot = commands.Bot(command_prefix="69 ", intents=intents)
+
+adms = 335637521486708736
 
 # Canais com o chat contínuo ativo no momento
 canais_em_chat = set()
@@ -46,6 +49,9 @@ canais_ocupados = set()  # canais que estão esperando resposta da Dália agora
 @bot.event
 async def on_ready():
     print(f"Tudo pronto! Logado como {bot.user}")
+    print(f"Estou participando de {len(bot.guilds)} servidores:")
+    for guild in bot.guilds:
+        print(f" - {guild.name} (ID: {guild.id})")
 
 #Para testar conexão
 @bot.command(name="ping", help="Testa se o bot está respondendo.")
@@ -113,8 +119,8 @@ async def call(ctx):
         if ctx.voice_client is not None:
             return await ctx.voice_client.move_to(channel)
 
-        await channel.connect()
-        await  ctx.send(f"Conctado com sucesso ao canal **{channel.name}**!")
+        await channel.connect(cls=voice_recv.VoiceRecvClient)
+        await ctx.send(f"Conectado com sucesso ao canal **{channel.name}**!")
 
     else:
         await ctx.send(f"Você precisa entrar em um canal primeiro!")
@@ -127,6 +133,18 @@ async def descall(ctx):
         await ctx.send(f"Desconectando")
     else:
         await ctx.send(f"Foda-se?")
+
+@bot.command(name="enviar", help="Enviar mensagens em um canal.")
+async def enviar(ctx, canal_id: int, *, texto: str):
+    if ctx.author.id != adms:
+        await ctx.send("Só administradores podem usar esse comando")
+        return
+    canal = bot.get_channel(canal_id)
+    if canal:
+        await canal.send(texto)
+        await ctx.send("Mensagem enviada com sucesso!")
+    else:
+        await ctx.send("Canal não encontrado")
 
 # Lê mensagens que não são comandos (usado no modo chat)
 @bot.event
