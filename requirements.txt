@@ -1,0 +1,43 @@
+# ============================================================
+# Requirements completo do projeto Dália
+# (bot de texto + chamada de voz)
+#
+# Instalar tudo de uma vez (com o venv ativado):
+#   pip install -r requirements.txt
+# ============================================================
+
+# --- Bot de texto no Discord ---
+discord.py[voice]
+requests
+python-dotenv
+
+# --- Chamada de voz: transcrição (voz -> texto) ---
+faster-whisper
+numpy
+
+# --- Chamada de voz: síntese de fala (texto -> voz) ---
+kokoro
+phonemizer
+
+# --- Chamada de voz: recebimento de áudio dos usuários ---
+# discord.py sozinho só ENVIA áudio, não recebe. Extensão da comunidade
+# necessária pra escutar o microfone de quem der o comando de voz:
+discord-ext-voice-recv
+
+# ============================================================
+# IMPORTANTE — coisas que o pip NÃO instala, precisam ser feitas
+# à parte, manualmente, no sistema operacional:
+#
+# 1) FFmpeg
+#    Necessário pro discord.py tocar/processar áudio em canais de voz.
+#    Baixe em https://ffmpeg.org/download.html e adicione ao PATH do Windows.
+#
+# 2) eSpeak NG
+#    Necessário pro Kokoro/phonemizer funcionarem (TTS).
+#    Baixe em https://github.com/espeak-ng/espeak-ng/releases
+#    (o script já aponta pro caminho padrão de instalação no Windows)
+#
+# 3) PyTorch com suporte a CUDA (opcional, mas recomendado p/ performance
+#    do faster-whisper com GPU). Ajuste cu121/cu118 conforme sua GPU/driver:
+#    pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121
+# ============================================================
