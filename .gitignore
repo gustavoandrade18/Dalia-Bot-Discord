@@ -16,3 +16,4 @@ __pycache__/
 # Arquivo de resposta de áudio, se ainda existir de versões antigas
 resposta.wav
 voz_referencia.wav
+gravacoes/
